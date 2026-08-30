@@ -1,0 +1,9 @@
+{
+    "name": "projeto/financas-app",
+    "description": "App de Gestão Financeira Pessoal MVC",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    }
+}

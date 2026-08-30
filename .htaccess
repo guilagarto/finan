@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /financas-app/
+
+# Se a requisição já não for para a pasta public, joga para lá
+RewriteCond %{REQUEST_URI} !^/financas-app/public/
+RewriteRule ^(.*)$ public/$1 [L]
