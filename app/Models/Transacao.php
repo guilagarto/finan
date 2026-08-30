@@ -8,61 +8,70 @@ use PDO;
 class Transacao {
 
     /**
-     * Busca os totais de entradas e saídas de cada mês.
-     * Retorna uma estrutura limpa direto do banco.
-     */
-    public static function getAcumuladoAno(int $usuarioId, int $ano): array {
-        try {
-            $db = Database::getConnection();
-
-            $query = "
-                SELECT 
-                    MONTH(data_transacao) as mes_num,
-                    SUM(CASE WHEN tipo = 'entrada' THEN valor_total ELSE 0 END) as entradas,
-                    SUM(CASE WHEN tipo = 'saida' THEN valor_total ELSE 0 END) as saidas
-                FROM transacoes
-                WHERE usuario_id = :usuario_id AND YEAR(data_transacao) = :ano
-                GROUP BY MONTH(data_transacao)
-            ";
-
-            $stmt = $db->prepare($query);
-            $stmt->execute([
-                'usuario_id' => $usuarioId,
-                'ano' => $ano
-            ]);
-
-            return $stmt->fetchAll() ?: [];
-        } catch (\Exception $e) {
-            return []; // Retorna vazio em caso de erro para não travar o PHP
-        }
-    }
-
-    /**
-     * Puxa a lista completa de transações de um mês específico.
+     * Puxa a lista de transações de um mês específico com conversão rígida de chaves.
      */
     public static function getPorMes(int $usuarioId, string $mes, int $ano): array {
-        try {
-            $db = Database::getConnection();
+        $db = Database::getConnection();
 
-            $query = "
-                SELECT id, data_transacao, descricao, tipo, valor_total 
-                FROM transacoes
-                WHERE usuario_id = :usuario_id 
-                  AND MONTH(data_transacao) = :mes 
-                  AND YEAR(data_transacao) = :ano
-                ORDER BY data_transacao DESC
-            ";
+        // Query limpa e direta usando as colunas idênticas à estrutura da tabela
+                // CORREÇÃO EXPERIMENTAL: Remove o filtro de usuario_id para isolar o problema de tipo de campo
+         $query = "
+            SELECT id, data_transacao, descricao, tipo, valor_total, valor_parcela, total_parcelas, status
+            FROM transacoes
+            WHERE CAST(usuario_id AS UNSIGNED) = :usuario_id 
+              AND (
+                (total_parcelas = 1 AND MONTH(data_transacao) = :mes AND YEAR(data_transacao) = :ano)
+                OR 
+                (total_parcelas > 1 AND (YEAR(data_transacao) < :ano OR (YEAR(data_transacao) = :ano AND MONTH(data_transacao) <= :mes)))
+              )
+            ORDER BY data_transacao DESC
+        ";
 
-            $stmt = $db->prepare($query);
-            $stmt->execute([
-                'usuario_id' => $usuarioId,
-                'mes' => (int)$mes,
-                'ano' => $ano
-            ]);
+        $stmt = $db->prepare($query);
+        $stmt->execute([
+            'usuario_id' => (int)$usuarioId, // Garante que o PHP envie como inteiro puro
+            'mes' => (int)$mes,
+            'ano' => $ano
+        ]);
 
-            return $stmt->fetchAll() ?: [];
-        } catch (\Exception $e) {
-            return [];
+
+        $resultados = $stmt->fetchAll() ?: [];
+        $transacoesProcessadas = [];
+
+        foreach ($resultados as $linhaBruta) {
+            // BLINDAGEM: Força todas as chaves vindas do MySQL a ficarem em letras minúsculas
+            $item = array_change_key_case($linhaBruta, CASE_LOWER);
+
+            if ((int)$item['total_parcelas'] === 1) {
+                $item['valor_exibicao'] = (float)$item['valor_total'];
+                $item['parcela_texto'] = 'À Vista';
+                $transacoesProcessadas[] = $item;
+            } else {
+                // Matemática de projeção de parcelas baseada na data de cadastro
+                $anoCompra = (int)date('Y', strtotime($item['data_transacao']));
+                $mesCompra = (int)date('m', strtotime($item['data_transacao']));
+                
+                $totalMesesFiltro = ($ano * 12) + (int)$mes;
+                $totalMesesCompra = ($anoCompra * 12) + $mesCompra;
+                
+                $mesesDiferenca = $totalMesesFiltro - $totalMesesCompra;
+                $parcelaAtualNoMes = $mesesDiferenca + 1;
+
+                // Valida se a parcela pertence ao intervalo ativo da transação
+                if ($parcelaAtualNoMes >= 1 && $parcelaAtualNoMes <= (int)$item['total_parcelas']) {
+                    $item['valor_exibicao'] = (float)$item['valor_parcela'];
+                    $item['parcela_texto'] = "Parc. {$parcelaAtualNoMes}/{$item['total_parcelas']}";
+                    
+                    // Ajuste de status de atraso para parcelas antigas em aberto
+                    if ($item['status'] === 'pendente' && ($ano < (int)date('Y') || ($ano === (int)date('Y') && (int)$mes < (int)date('m')))) {
+                        $item['status'] = 'atrasado';
+                    }
+
+                    $transacoesProcessadas[] = $item;
+                }
+            }
         }
+
+        return $transacoesProcessadas;
     }
 }

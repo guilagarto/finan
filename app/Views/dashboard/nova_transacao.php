@@ -59,7 +59,7 @@
             </div>
 
             <div class="form-row">
-                <<!-- Encontre e substitua o bloco do select por este no seu arquivo nova_transacao.php -->
+                <!-- Encontre e substitua o bloco do select por este no seu arquivo nova_transacao.php -->
 <!-- Substitua o bloco do select por este no seu arquivo nova_transacao.php -->
 <!-- Encontre e mude o select do seu arquivo nova_transacao.php para ficar exatamente assim: -->
 <div class="form-group">
@@ -78,6 +78,14 @@
                     <input type="date" id="data_transacao" name="data_transacao" required value="<?php echo date('Y-m-d'); ?>">
                 </div>
             </div>
+                <!-- Cole este bloco dentro do form, antes do botão submit -->
+<div class="form-group">
+    <label for="status">Status do Pagamento</label>
+    <select id="status" name="status" required>
+        <option value="pago" selected>Pago / Recebido</option>
+        <option value="pendente">Pendente / Em aberto</option>
+    </select>
+</div>
 
             <button type="submit" class="btn-submit">Salvar Registro</button>
         </form>

@@ -20,4 +20,8 @@ $router->get('/dashboard/mes', 'DashboardController@mes');
 $router->get('/dashboard/transacao/nova', 'DashboardController@novaTransacao');
 $router->post('/dashboard/transacao/salvar', 'DashboardController@salvarTransacao');
 
+// Certifique-se de que esta linha está presente no seu routes.php:
+$router->get('/dashboard/transacao/excluir', 'DashboardController@excluirTransacao');
+
+
 return $router;

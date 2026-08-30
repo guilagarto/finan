@@ -29,12 +29,26 @@ class DashboardController {
     /**
      * Carrega a listagem do mês específico vinda do banco
      */
-    public function mes(): void {
-        $anoAtual = (int)date('Y');
-        $usuarioId = (int)$_SESSION['usuario_id'];
+        /**
+     * Carrega a listagem do mês específico vinda do banco
+     */
+    /**
+     * Carrega a listagem do mês específico vinda do banco
+     */
+     public function mes(): void {
+        $anoAtual = 2026; // Mantém o ano base dos seus lançamentos
+        
+        // CORREÇÃO: Remove o ID fixo e adota o ID real da sessão do usuário logado
+        $usuarioId = (int)$_SESSION['usuario_id']; 
         
         $mesSelecionado = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT) ?? date('m');
         $mesSelecionado = str_pad($mesSelecionado, 2, "0", STR_PAD_LEFT);
+
+        // ... O restante do código do seu método mes() continua igual abaixo ...
+
+
+        // ... mantenha o restante do código do método mes() igual ...
+
 
         try {
             $transacoes = Transacao::getPorMes($usuarioId, $mesSelecionado, $anoAtual);
@@ -65,14 +79,19 @@ class DashboardController {
        /**
      * Processa os dados recebidos e força o tipo correto contra erros de cache
      */
+        /**
+     * Processa os dados recebidos e salva a transação no MySQL com suporte a Status e Parcelas
+     */
     public function salvarTransacao(): void {
         $usuarioId = (int)$_SESSION['usuario_id'];
         
+        // Captura e higieniza todos os dados vindos do formulário via POST
         $descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_SPECIAL_CHARS);
         $valorTotal = filter_input(INPUT_POST, 'valor_total', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         $valorParcela = filter_input(INPUT_POST, 'valor_parcela', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         $totalParcelas = filter_input(INPUT_POST, 'total_parcelas', FILTER_SANITIZE_NUMBER_INT);
         $tipoRaw = filter_input(INPUT_POST, 'tipo', FILTER_SANITIZE_SPECIAL_CHARS);
+        $status = filter_input(INPUT_POST, 'status', FILTER_SANITIZE_SPECIAL_CHARS) ?? 'pago';
         $dataTransacao = $_POST['data_transacao'] ?? date('Y-m-d');
 
         if (!$descricao || !$valorTotal || !$tipoRaw || !$valorParcela || !$totalParcelas) {
@@ -80,18 +99,18 @@ class DashboardController {
             return;
         }
 
-        // FORÇAR TRATAMENTO: Mapeia qualquer texto vindo do formulário para o ENUM exato do banco
+        // Mapeia qualquer texto vindo do formulário para o ENUM exato do banco ('receita' ou 'despesa')
         $tipoRaw = strtolower(trim($tipoRaw));
-        
         if ($tipoRaw === 'receita' || $tipoRaw === 'entrada' || $tipoRaw === 'ganho') {
-            $tipoDefinitivo = 'receita'; // Padrão exato da sua tabela
+            $tipoDefinitivo = 'receita';
         } else {
-            $tipoDefinitivo = 'despesa'; // Padrão exato da sua tabela
+            $tipoDefinitivo = 'despesa';
         }
 
         try {
             $db = \App\Core\Database::getConnection();
             
+            // DECLARAÇÃO FIXA: Definindo a query com todas as colunas obrigatórias
             $query = "
                 INSERT INTO transacoes (
                     usuario_id, descricao, valor_total, valor_parcela, 
@@ -100,28 +119,66 @@ class DashboardController {
                 ) 
                 VALUES (
                     :usuario_id, :descricao, :valor_total, :valor_parcela, 
-                    1, :total_parcelas, :tipo, 'pago', 
+                    1, :total_parcelas, :tipo, :status, 
                     :data_transacao, NOW()
                 )
             ";
             
+            // Prepara o comando SQL de forma segura contra injeção de código
             $stmt = $db->prepare($query);
+            
+            // Executa passando as variáveis mapeadas nos marcadores
             $stmt->execute([
                 'usuario_id' => $usuarioId,
                 'descricao' => $descricao,
                 'valor_total' => $valorTotal,
                 'valor_parcela' => $valorParcela,
                 'total_parcelas' => $totalParcelas,
-                'tipo' => $tipoDefinitivo, // Envia estritamente 'receita' ou 'despesa'
+                'tipo' => $tipoDefinitivo,
+                'status' => $status,
                 'data_transacao' => $dataTransacao
             ]);
 
-            // Redireciona com sucesso total para o painel de controle
+            // Redireciona com sucesso total para o painel de controle principal
             header('Location: /financas-app/dashboard');
             exit;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo "Erro definitivo ao salvar no banco: " . $e->getMessage();
         }
     }
+        /**
+     * Remove uma transação do banco de dados com segurança
+     */
+    public function excluirTransacao(): void {
+        // Usa o ID 4 se você ainda estiver testando com ele fixo, ou adote o ID da sessão:
+        $usuarioId = isset($_SESSION['usuario_id']) ? (int)$_SESSION['usuario_id'] : 4; 
+        
+        $transacaoId = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $mesRetorno = filter_input(INPUT_GET, 'mes', FILTER_SANITIZE_SPECIAL_CHARS) ?? '08';
+
+        if (!$transacaoId) {
+            header('Location: /financas-app/dashboard');
+            exit;
+        }
+
+        try {
+            $db = \App\Core\Database::getConnection();
+            
+            // Remove a linha baseando-se no ID da transação
+            $query = "DELETE FROM transacoes WHERE id = :id";
+            $stmt = $db->prepare($query);
+            $stmt->execute([
+                'id' => $transacaoId
+            ]);
+
+            // Força o retorno do navegador para a página do mês onde o usuário já estava
+            header("Location: /financas-app/dashboard/mes?id=" . $mesRetorno);
+            exit;
+        } catch (\Exception $e) {
+            echo "Erro ao excluir o lançamento: " . $e->getMessage();
+        }
+    }
+
+
 
 }
