@@ -21,15 +21,6 @@ class ComposerStaticInit0cdb100e4417cd09c13e0c3e94d115cf
     );
 
     public static $classMap = array (
-        'App\\Controllers\\AuthController' => __DIR__ . '/../..' . '/app/Controllers/AuthController.php',
-        'App\\Controllers\\DashboardController' => __DIR__ . '/../..' . '/app/Controllers/DashboardController.php',
-        'App\\Core\\Controller' => __DIR__ . '/../..' . '/app/Core/Controller.php',
-        'App\\Core\\Database' => __DIR__ . '/../..' . '/app/Core/Database.php',
-        'App\\Core\\Router' => __DIR__ . '/../..' . '/app/Core/Router.php',
-        'App\\Models\\Transacao' => __DIR__ . '/../..' . '/app/Models/Transacao.php',
-        'App\\Models\\Usuario' => __DIR__ . '/../..' . '/app/Models/Usuario.php',
-        'App\\Services\\AuthService' => __DIR__ . '/../..' . '/app/Services/AuthService.php',
-        'App\\Services\\FinanceService' => __DIR__ . '/../..' . '/app/Services/FinanceService.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
