@@ -8,13 +8,26 @@ use PDOException;
 class Database {
     private static ?PDO $instance = null;
 
-    public static function getConnection(): PDO {
+        public static function getConnection(): PDO {
         if (self::$instance === null) {
-            // Lendo as chaves exatas do seu arquivo .env
-            $host     = $_ENV['DB_HOST'] ?? '127.0.0.1';
-            $dbname   = $_ENV['DB_NAME'] ?? 'finan'; 
-            $user     = $_ENV['DB_USER'] ?? 'root';    
-            $password = $_ENV['DB_PASS'] ?? ''; // Alterado para DB_PASS para bater com seu .env   
+            
+            // 1. Tenta ler do $_ENV (Preenchido pelo Environment.php)
+            // 2. Se estiver vazio (bloqueio do servidor), usa os dados fixos da Hostinger como Plano B
+            // 3. Se não encontrar nada, cai nos padrões do XAMPP local
+            
+            $host     = $_ENV['DB_HOST']     ?? '127.0.0.1';
+            
+            // Tratamento especial para a Hostinger caso o ambiente venha limpo pelo servidor
+            if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_ADDR'] === '127.0.0.1') {
+                $dbname   = $_ENV['DB_NAME']     ?? 'finan'; 
+                $user     = $_ENV['DB_USER']     ?? 'root';    
+                $password = $_ENV['DB_PASS']     ?? '';    
+            } else {
+                // Credenciais fixas de produção como contingência para a Hostinger
+                $dbname   = $_ENV['DB_NAME']     ?? 'u738627255_finan_db'; 
+                $user     = $_ENV['DB_USER']     ?? 'u738627255_yato_finandb';    
+                $password = $_ENV['DB_PASS']     ?? 'iGui2026@';    
+            }
 
             try {
                 self::$instance = new PDO(
@@ -34,4 +47,5 @@ class Database {
         }
         return self::$instance;
     }
+
 }
