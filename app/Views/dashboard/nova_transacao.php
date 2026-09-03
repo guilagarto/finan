@@ -34,7 +34,8 @@
     <div class="form-card">
         <h3 style="margin-top:0; margin-bottom: 20px; color: #333;">Cadastrar Lançamento</h3>
         
-        <form action="/financas-app/dashboard/transacao/salvar" method="POST">
+        <form action="<?= url('/dashboard/transacao/salvar') ?>" method="POST">
+
             <div class="form-group">
                 <label for="descricao">Descrição</label>
                 <input type="text" id="descricao" name="descricao" required placeholder="Ex: Mercado, Salário, Internet...">
