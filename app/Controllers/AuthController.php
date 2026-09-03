@@ -12,7 +12,7 @@ class AuthController {
     public function showLogin(): void {
         // Se o usuário já estiver logado, redireciona direto para a dashboard
         if (isset($_SESSION['usuario_id'])) {
-            header('Location: /financas-app/dashboard');
+            header('Location: ' . url('/dashboard'));
             exit;
         }
 
@@ -29,7 +29,7 @@ class AuthController {
 
         if (!$email || !$senha) {
             $_SESSION['erro_login'] = "Preencha todos os campos.";
-            header('Location: /financas-app/login');
+            header('Location: ' . url('/login'));
             exit;
         }
 
@@ -44,12 +44,12 @@ class AuthController {
             
             // Limpa erros antigos e joga para a Dashboard
             unset($_SESSION['erro_login']);
-            header('Location: /financas-app/dashboard');
+            header('Location: ' . url('/dashboard'));
             exit;
         } else {
             // Falha na autenticação
             $_SESSION['erro_login'] = "E-mail ou senha inválidos.";
-            header('Location: /financas-app/login');
+            header('Location: ' . url('/login'));
             exit;
         }
     }
@@ -68,11 +68,11 @@ class AuthController {
         }
         session_destroy();
 
-        header('Location: /financas-app/login');
+        header('Location: ' . url('/login'));
         exit;
     }
 
-        /**
+    /**
      * Exibe a tela de registro de novos usuários
      */
     public function showCadastro(): void {
@@ -106,7 +106,7 @@ class AuthController {
             ]);
             
             // Cadastro realizado com sucesso! Redireciona para o login
-            header('Location: /financas-app/login');
+            header('Location: ' . url('/login'));
             exit;
         } catch (\Exception $e) {
             echo "Erro ao cadastrar usuário no banco: " . $e->getMessage();
