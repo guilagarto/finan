@@ -151,40 +151,41 @@ class DashboardController {
         /**
      * Remove uma transação do banco de dados com segurança
      */
-    public function excluirTransacao(): void {
-        // Usa o ID 4 se você ainda estiver testando com ele fixo, ou adote o ID da sessão:
-        $usuarioId = isset($_SESSION['usuario_id']) ? (int)$_SESSION['usuario_id'] : 4; 
-        
-        $transacaoId = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-        $mesRetorno = filter_input(INPUT_GET, 'mes', FILTER_SANITIZE_SPECIAL_CHARS) ?? '08';
-
-        if (!$transacaoId) {
-            header('Location: ' . url('/dashboard'));
-
-            exit;
-        }
-
-        try {
-            $db = \App\Core\Database::getConnection();
-            
-            // Remove a linha baseando-se no ID da transação
-            $query = "DELETE FROM transacoes WHERE id = :id";
-            $stmt = $db->prepare($query);
-            $stmt->execute([
-                'id' => $transacaoId
-            ]);
-
-            // Força o retorno do navegador para a página do mês onde o usuário já estava
-            header("Location: " . url('/dashboard/mes?id=' . $mesId)); // Mantendo a sua variável do final idêntica
-
-            exit;
-        } catch (\Exception $e) {
-            echo "Erro ao excluir o lançamento: " . $e->getMessage();
-        }
-
-        
-
+   public function excluirTransacao(): void {
+    // Usa o ID da sessão se existir, ou adota o ID 4 como fallback
+    $usuarioId = isset($_SESSION['usuario_id']) ? (int)$_SESSION['usuario_id'] : 4; 
+    
+    $transacaoId = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    
+    // Captura o mês de retorno da URL. Se vier vazio, assume o mês atual por segurança
+    $mesRetorno = filter_input(INPUT_GET, 'mes', FILTER_SANITIZE_NUMBER_INT);
+    if (empty($mesRetorno)) {
+        $mesRetorno = date('m');
     }
+
+    if (!$transacaoId) {
+        header('Location: ' . url('/dashboard'));
+        exit;
+    }
+
+    try {
+        $db = \App\Core\Database::getConnection();
+        
+        // Remove a linha baseando-se no ID da transação
+        $query = "DELETE FROM transacoes WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->execute([
+            'id' => $transacaoId
+        ]);
+
+        // RETORNO CORRIGIDO: Agora usando a variável $mesRetorno que possui o número do mês!
+        header("Location: " . url('/dashboard/mes?id=' . $mesRetorno));
+        exit;
+    } catch (\Exception $e) {
+        echo "Erro ao excluir o lançamento: " . $e->getMessage();
+    }
+}
+
     public function marcarComoPaga(): void {
     $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
     
