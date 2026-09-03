@@ -44,6 +44,82 @@
 
         .text-entrada { color: #28a745; font-weight: bold; }
         .text-saida { color: #dc3545; font-weight: bold; }
+
+        /* --- Estilos Gerais da Tabela --- */
+.table-card {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.responsive-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.responsive-table th, 
+.responsive-table td {
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Alinhamentos específicos para Desktop */
+.text-right { text-align: right !important; }
+.text-center { text-align: center !important; }
+
+/* --- Responsividade (Mobile) --- */
+@media screen and (max-width: 768px) {
+    /* Esconde o cabeçalho original da tabela */
+    .responsive-table thead {
+        display: none;
+    }
+    
+    /* Transforma a tabela, corpo e linhas em blocos cheios */
+    .responsive-table, 
+    .responsive-table tbody, 
+    .responsive-table tr {
+        display: block;
+        width: 100%;
+    }
+    
+    /* Transforma cada linha em um "card" individual */
+    .responsive-table tr.transacao-item {
+        margin-bottom: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 10px;
+        background: #fff;
+    }
+    
+    /* Transforma cada célula em uma linha de dados com rótulo */
+    .responsive-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right !important; /* Força o valor do dado para a direita */
+        padding: 8px 5px;
+        border-bottom: 1px dotted #eee;
+    }
+    
+    /* Remove a borda pontilhada do último item do card */
+    .responsive-table td:last-child {
+        border-bottom: none;
+        justify-content: center; /* Centraliza o botão de excluir no mobile */
+        padding-top: 12px;
+    }
+    
+    /* Injeta o nome da coluna antes do valor usando o atributo data-label */
+    .responsive-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-align: left;
+        color: #495057;
+        padding-right: 10px;
+    }
+}
     </style>
 </head>
 <body>
@@ -104,63 +180,67 @@
     </div>
 
     <!-- Tabela de Dados -->
-    <div class="table-card">
-        <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
-            <thead>
-                <tr>
-                    <th style="width: 15%;">Data</th>
-                    <th style="width: 25%;">Descrição</th>
-                    <th style="width: 15%;">Parcelamento</th>
-                    <th style="width: 10%;">Tipo</th>
-                    <th style="width: 12%;">Status</th>
-                    <th style="text-align: right; width: 13%;">Valor da Parcela</th>
-                    <th style="text-align: center; width: 10%;">Ações</th>
-                </tr>
-            </thead>
-            <tbody id="lista-transacoes">
-                <?php if (empty($transacoes)): ?>
-                    <tr>
-                        <td colspan="7" style="text-align: center; color: #6c757d; padding: 30px;">Nenhuma transação cadastrada ou ativa neste mês.</td>
-                    </tr>
-                <?php else: ?>
-                    <?php foreach ($transacoes as $item): ?>
-                        <tr class="transacao-item" data-tipo="<?= htmlspecialchars($item['tipo']); ?>">
-                            <td style="vertical-align: middle;"><?= date('d/m/Y', strtotime($item['data_transacao'])); ?></td>
-                            <td style="vertical-align: middle; word-wrap: break-word;"><?= htmlspecialchars($item['descricao']); ?></td>
-                            <td style="vertical-align: middle; color: #6c757d; font-size: 14px;"><?= htmlspecialchars($item['parcela_texto']); ?></td>
-                            <td style="vertical-align: middle;">
-                                <span class="badge <?= $item['tipo'] === 'receita' ? 'badge-entrada' : 'badge-saida'; ?>">
-                                    <?= $item['tipo'] === 'receita' ? 'Entrada' : 'Saída'; ?>
-                                </span>
-                            </td>
-                            <td style="vertical-align: middle;">
-                                <?php 
-                                    $statusClass = 'status-pendente';
-                                    if ($item['status'] === 'pago') $statusClass = 'status-pago';
-                                    if ($item['status'] === 'atrasado') $statusClass = 'status-atrasado';
-                                ?>
-                                <span class="status-dot <?= $statusClass; ?>">
-                                    <?= htmlspecialchars($item['status']); ?>
-                                </span>
-                            </td>
-                            <td style="text-align: right; vertical-align: middle;" class="<?= $item['tipo'] === 'receita' ? 'text-entrada' : 'text-saida'; ?>">
-                                <?= $item['tipo'] === 'receita' ? '+' : '-'; ?> R$ <?= number_format($item['valor_exibicao'], 2, ',', '.'); ?>
-                            </td>
-                            
-                            <!-- CÉLULA ALINHADA E PROTEGIDA CONTRA QUEBRAS DE LINHA -->
-                            <td style="text-align: center; vertical-align: middle; white-space: nowrap;">
-                                <a href="/financas-app/dashboard/transacao/excluir?id=<?= $item['id']; ?>&mes=<?= isset($_GET['id']) ? $_GET['id'] : date('m'); ?>" 
-                                   onclick="return confirm('Atenção: Isso excluirá o lançamento em definitivo. Deseja continuar?')" 
-                                   style="color: #dc3545; text-decoration: none; font-weight: bold; font-size: 13px; background: #fdf2f2; padding: 6px 14px; border: 1px solid #fbc4c4; border-radius: 4px; display: inline-block; line-height: 1;">
-                                   Excluir
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
+    <div class="table-card"> 
+    <table class="responsive-table"> 
+        <thead> 
+            <tr> 
+                <th>Data</th> 
+                <th>Descrição</th> 
+                <th>Parcelamento</th> 
+                <th>Tipo</th> 
+                <th>Status</th> 
+                <th class="text-right">Valor da Parcela</th> 
+                <th class="text-center">Ações</th> 
+            </tr> 
+        </thead> 
+        <tbody id="lista-transacoes"> 
+            <?php if (empty($transacoes)): ?> 
+                <tr> 
+                    <td colspan="7" style="text-align: center; color: #6c757d; padding: 30px;">Nenhuma transação cadastrada ou ativa neste mês.</td> 
+                </tr> 
+            <?php else: ?> 
+                <?php foreach ($transacoes as $item): ?> 
+                    <tr class="transacao-item" data-tipo="<?= htmlspecialchars($item['tipo']); ?>"> 
+                        
+                        <!-- O segredo está no 'data-label', que repete o nome da coluna no mobile -->
+                        <td data-label="Data" style="vertical-align: middle;"><?= date('d/m/Y', strtotime($item['data_transacao'])); ?></td> 
+                        
+                        <td data-label="Descrição" style="vertical-align: middle; word-wrap: break-word; max-width: 250px;"><?= htmlspecialchars($item['descricao']); ?></td> 
+                        
+                        <td data-label="Parcelamento" style="vertical-align: middle; color: #6c757d; font-size: 14px;"><?= htmlspecialchars($item['parcela_texto']); ?></td> 
+                        
+                        <td data-label="Tipo" style="vertical-align: middle;"> 
+                            <span class="badge <?= $item['tipo'] === 'receita' ? 'badge-entrada' : 'badge-saida'; ?>"> 
+                                <?= $item['tipo'] === 'receita' ? 'Entrada' : 'Saída'; ?> 
+                            </span> 
+                        </td> 
+                        
+                        <td data-label="Status" style="vertical-align: middle;"> 
+                            <?php 
+                            $statusClass = 'status-pendente'; 
+                            if ($item['status'] === 'pago') $statusClass = 'status-pago'; 
+                            if ($item['status'] === 'atrasado') $statusClass = 'status-atrasado'; 
+                            ?> 
+                            <span class="status-dot <?= $statusClass; ?>"> 
+                                <?= htmlspecialchars($item['status']); ?> 
+                            </span> 
+                        </td> 
+                        
+                        <td data-label="Valor" style="vertical-align: middle;" class="<?= $item['tipo'] === 'receita' ? 'text-entrada text-right' : 'text-saida text-right'; ?>"> 
+                            <?= $item['tipo'] === 'receita' ? '+' : '-'; ?> R$ <?= number_format($item['valor_exibicao'], 2, ',', '.'); ?> 
+                        </td> 
+                        
+                        <td style="vertical-align: middle; white-space: nowrap;"> 
+                            <a href="/financas-app/dashboard/transacao/excluir?id=<?= $item['id']; ?>&mes=<?= isset($_GET['id']) ? $_GET['id'] : date('m'); ?>" onclick="return confirm('Atenção: Isso excluirá o lançamento em definitivo. Deseja continuar?')" style="color: #dc3545; text-decoration: none; font-weight: bold; font-size: 13px; background: #fdf2f2; padding: 6px 14px; border: 1px solid #fbc4c4; border-radius: 4px; display: inline-block; line-height: 1;"> 
+                                Excluir 
+                            </a> 
+                        </td> 
+                    </tr> 
+                <?php endforeach; ?> 
+            <?php endif; ?> 
+        </tbody> 
+    </table> 
+</div>
 </div>
 
 <script>

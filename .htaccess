@@ -1,6 +1,10 @@
-RewriteEngine On
-RewriteBase /financas-app/
+<IfModule mod_rewrite.c>
+    RewriteEngine On
 
-# Se a requisição já não for para a pasta public, joga para lá
-RewriteCond %{REQUEST_URI} !^/financas-app/public/
-RewriteRule ^(.*)$ public/$1 [L]
+    # Impede que pastas reais ou arquivos reais quebrem o redirecionamento
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    # Redireciona tudo para a pasta public/ mantendo a URL limpa de forma relativa
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
