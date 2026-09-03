@@ -46,7 +46,8 @@
             <!-- Bloco 1: Filtro de Consultas por Mês -->
             <div class="card-menu">
                 <h4 style="margin-bottom: 15px;">Visualizar Movimentações</h4>
-                <form action="/financas-app/dashboard/mes" method="GET" class="filter-section">
+                <form action="<?= url('/dashboard/mes') ?>" method="GET">
+
                     <select name="id" id="id" required>
                         <option value="01">Janeiro</option>
                         <option value="02">Fevereiro</option>

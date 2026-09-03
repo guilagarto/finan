@@ -14,7 +14,8 @@ class DashboardController {
 
         // Bloqueio de segurança contra acessos deslogados
         if (!isset($_SESSION['usuario_id'])) {
-            header('Location: /financas-app/login');
+            header("Location: " . url('/dashboard/mes?id=' . $mesId));
+
             exit;
         }
     }
