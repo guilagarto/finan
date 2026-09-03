@@ -183,26 +183,29 @@ class DashboardController {
 
     }
     public function marcarComoPaga(): void {
-    // Pega o ID da transação vindo do link
     $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-    // Guarda o ID do mês atual para onde o usuário deve voltar após atualizar
-    $mesId = filter_input(INPUT_GET, 'mes_id', FILTER_VALIDATE_INT) ?? date('m');
+    
+    // Tenta pegar o mes_id do link. Se não vier nada, tenta pegar o mês atual do sistema (ex: 09 ou 10)
+    $mesId = filter_input(INPUT_GET, 'mes_id', FILTER_VALIDATE_INT);
+    if (empty($mesId)) {
+        $mesId = date('m'); 
+    }
 
     if ($id) {
         try {
             $db = \App\Core\Database::getConnection();
-            // Atualiza o status para 'Pago' no banco de dados
-            $stmt = $db->prepare("UPDATE transacoes SET status = 'Pago' WHERE id = :id");
+            $stmt = $db->prepare("UPDATE transacoes SET status = 'pago' WHERE id = :id");
             $stmt->execute(['id' => $id]);
         } catch (\Exception $e) {
-            // Tratamento de erro se necessário
+            // Tratado silenciosamente
         }
     }
 
-    // Redireciona de volta para a mesma página do mês de onde o usuário clicou
+    // Força o redirecionamento com um ID de mês garantido
     header("Location: " . url('/dashboard/mes?id=' . $mesId));
     exit;
 }
+
 
 
 

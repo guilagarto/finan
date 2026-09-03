@@ -253,9 +253,10 @@
                         <td style="vertical-align: middle; white-space: nowrap; text-align: center;"> 
                             <!-- BOTÃO DE DAR BAIXA (Apenas se o status for diferente de 'pago') -->
                             <?php if (strtolower($item['status']) !== 'pago'): ?>
-                                <a href="<?= url('/transacao/pagar?id=' . $item['id'] . '&mes_id=' . (isset($_GET['id']) ? $_GET['id'] : date('m'))); ?>" style="color: #ffffff; text-decoration: none; font-weight: bold; font-size: 13px; background: #007bff; padding: 6px 14px; border: 1px solid #0062cc; border-radius: 4px; display: inline-block; line-height: 1; margin-right: 5px;"> 
-                                    Pagar 
-                                </a> 
+                                <a href="<?= url('/transacao/pagar?id=' . $item['id'] . '&mes_id=' . (isset($_GET['id']) ? $_GET['id'] : date('m'))); ?>" style="...">
+    Pagar
+</a>
+ 
                             <?php endif; ?>
 
                             <!-- BOTÃO EXCLUIR DINÂMICO (Previnido contra Erro 404) -->

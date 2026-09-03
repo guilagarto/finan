@@ -72,7 +72,9 @@
                     <h4 style="margin-bottom: 15px;">Ações Rápidas</h4>
                     <p style="color: #6c757d; font-size: 14px; margin-top: 0;">Adicione novas receitas ou despesas diretamente no seu saldo geral.</p>
                 </div>
-                <a href="/financas-app/dashboard/transacao/nova" class="btn-green">+ Novo Lançamento</a>
+                <a href="<?= url('/dashboard/transacao/nova') ?>" class="...">Novo Lançamento</a>
+
+
             </div>
         </div>
     </div>
