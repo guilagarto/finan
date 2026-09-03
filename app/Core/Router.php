@@ -20,7 +20,8 @@ class Router {
         $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
         // Remove o prefixo da subpasta do XAMPP para encontrar a rota limpa
-        $subpasta = '/financas-app';
+        $subpasta = BASE_URL;
+
         if (str_starts_with($url, $subpasta)) {
             $url = substr($url, strlen($subpasta));
         }

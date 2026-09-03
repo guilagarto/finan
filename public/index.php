@@ -9,6 +9,23 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// ==========================================
+// CONFIGURAÇÃO DE URL DINÂMICA (LOCAL VS WEB)
+// ==========================================
+if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_ADDR'] === '127.0.0.1') {
+    define('BASE_URL', '/financas-app');
+} else {
+    define('BASE_URL', ''); // Fica vazio na Hostinger porque roda direto na raiz do domínio
+}
+
+// Função global para gerar links corretos em qualquer ambiente
+if (!function_exists('url')) {
+    function url(string $path = ''): string {
+        return BASE_URL . '/' . ltrim($path, '/');
+    }
+}
+// ==========================================
+
 // 1. Carrega o Autoload do Composer de forma dinâmica e segura
 $autoloadPath = __DIR__ . '/../vendor/autoload.php';
 // Backup caso a estrutura mude na hospedagem
@@ -21,7 +38,7 @@ if (file_exists($autoloadPath)) {
 }
 
 // 2. Inclui o arquivo de rotas
-$routesPath = __DIR__ . '/../app/Config/routes.php'; // Verifique se o caminho local das suas rotas é este mesmo
+$routesPath = __DIR__ . '/../app/Config/routes.php';
 $hostingerRoutes = '/home/u730627255/domains/8ou80.xyz/public_html/app/Config/routes.php';
 
 if (file_exists($routesPath)) {

@@ -30,7 +30,8 @@
     <?php endif; ?>
 
     <!-- O action aponta para a rota POST '/login' que criamos no Router -->
-    <form action="/financas-app/login" method="POST">
+    <form action="<?= url('/login') ?>" method="POST">
+
 
         <div class="form-group">
             <label for="email">E-mail</label>
