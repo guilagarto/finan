@@ -21,7 +21,19 @@ if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_ADDR'] === '127.
 // Função global para gerar links corretos em qualquer ambiente
 if (!function_exists('url')) {
     function url(string $path = ''): string {
-        return BASE_URL . '/' . ltrim($path, '/');
+        $cleanPath = ltrim($path, '/');
+        
+        // Detecta automaticamente se o site usa HTTP ou HTTPS
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+        $domain = $_SERVER['HTTP_HOST']; // Pega 'localhost' ou '8ou80.xyz'
+        
+        // Se estiver no XAMPP local (BASE_URL = /financas-app)
+        if (!empty(BASE_URL)) {
+            return $protocol . $domain . BASE_URL . '/' . $cleanPath;
+        }
+        
+        // Se estiver na Hostinger (BASE_URL vazio)
+        return $protocol . $domain . '/' . $cleanPath;
     }
 }
 // ==========================================
