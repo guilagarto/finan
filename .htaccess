@@ -1,12 +1,8 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-
-    # Impede que pastas reais ou arquivos reais quebrem o redirecionamento
-    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Se o arquivo ou pasta real não existir, joga tudo de forma limpa para a pasta public
     RewriteCond %{REQUEST_FILENAME} !-f
-
-    # Redireciona tudo para a pasta public/ mantendo a URL limpa de forma relativa
-    RewriteRule ^(.*)$ public/$1 [L]
-    php_flag display_errors On
-
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ public/index.php [L]
 </IfModule>

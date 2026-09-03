@@ -1,7 +1,10 @@
-RewriteEngine On
-RewriteBase /financas-app/public/
-
-# Se não for um arquivo real (como imagem/css) ou pasta real, manda para o index.php
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Se o arquivo ou pasta física existir dentro de public (como css/js), entrega direto
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Caso contrário, processa o index mestre
+    RewriteRule ^ index.php [L]
+</IfModule>

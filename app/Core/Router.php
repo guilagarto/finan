@@ -15,20 +15,27 @@ class Router {
         $this->routes['POST'][$path] = $controllerAction;
     }
 
-       public function run(): void {
+    // Processa a requisição atual do navegador
+    public function run(): void {
         $method = $_SERVER['REQUEST_METHOD'];
         $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        // Remove o prefixo da subpasta do XAMPP para encontrar a rota limpa
+        // Remove o prefixo da subpasta do XAMPP de forma segura
         $subpasta = BASE_URL;
 
-        if (str_starts_with($url, $subpasta)) {
+        // Só remove se a subpasta não estiver vazia e a URL realmente começar com ela
+        if (!empty($subpasta) && str_starts_with($url, $subpasta)) {
             $url = substr($url, strlen($subpasta));
         }
 
-        // Garante que se a URL ficar vazia ou sem barra, vire a raiz "/"
+        // Garante que se a URL ficar vazia, vire a raiz "/"
         if (empty($url) || $url === '') {
             $url = '/';
+        }
+
+        // Garante que a URL comece com "/" se não estiver vazia
+        if ($url !== '/' && !str_starts_with($url, '/')) {
+            $url = '/' . $url;
         }
 
         // Remove a barra final se houver (ex: /login/ vira /login)
@@ -48,10 +55,8 @@ class Router {
         echo "Página não encontrada (404). URL buscada internamente: " . $url;
     }
 
-
-       // Certifique-se de que o método dentro de app/Core/Router.php está assim:
+    // Executa o controlador e o método mapeados na rota
     private function executeAction(string $action): void {
-        // Altere para explode('@', $action) se estiver diferente
         list($controllerName, $method) = explode('@', $action); 
         $fullControllerName = "\\App\\Controllers\\" . $controllerName;
 
@@ -66,5 +71,4 @@ class Router {
         http_response_code(500);
         echo "Erro interno: Controller ou método não encontrado. Tentou chamar: " . $fullControllerName . " -> " . $method;
     }
-
 }
