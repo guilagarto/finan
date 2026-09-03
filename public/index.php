@@ -28,7 +28,6 @@ if (!function_exists('url')) {
 
 // 1. Carrega o Autoload do Composer de forma dinâmica e segura
 $autoloadPath = __DIR__ . '/../vendor/autoload.php';
-// Backup caso a estrutura mude na hospedagem
 $hostingerAutoload = '/home/u730627255/domains/8ou80.xyz/public_html/vendor/autoload.php';
 
 if (file_exists($autoloadPath)) {
@@ -36,6 +35,16 @@ if (file_exists($autoloadPath)) {
 } elseif (file_exists($hostingerAutoload)) {
     require_once $hostingerAutoload;
 }
+
+// ==========================================
+// CARREGAMENTO DO ARQUIVO .ENV (PASTA PUBLIC)
+// ==========================================
+// Como o Composer já foi carregado acima, as classes do namespace App\Core ficam disponíveis.
+// Passamos __DIR__ para que a classe procure o arquivo .env dentro da pasta public/
+if (class_exists('\App\Core\Environment')) {
+    \App\Core\Environment::load(__DIR__);
+}
+// ==========================================
 
 // 2. Inclui o arquivo de rotas
 $routesPath = __DIR__ . '/../app/Config/routes.php';

@@ -1,5 +1,5 @@
 <?php
-namespace App\core;
+namespace App\Core;
 
 class Environment {
     public static function load($dir) {
