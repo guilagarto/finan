@@ -72,7 +72,12 @@
                     <h4 style="margin-bottom: 15px;">Ações Rápidas</h4>
                     <p style="color: #6c757d; font-size: 14px; margin-top: 0;">Adicione novas receitas ou despesas diretamente no seu saldo geral.</p>
                 </div>
-                <a href="<?= url('/dashboard/transacao/nova') ?>" class="...">Novo Lançamento</a>
+                <!-- BOTÃO NOVO LANÇAMENTO (Estilizado direto no código) -->
+<a href="<?= url('/dashboard/transacao/nova') ?>" 
+   style="color: #ffffff; text-decoration: none; font-weight: bold; font-size: 13px; background: #007bff; padding: 8px 16px; border: 1px solid #0062cc; border-radius: 4px; display: inline-block; line-height: 1; margin-top: 10px; transition: background 0.2s;">
+   + Novo Lançamento
+</a>
+
 
 
             </div>

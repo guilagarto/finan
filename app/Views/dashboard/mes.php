@@ -133,7 +133,12 @@
 </header>
 
 <div class="container">
-    <a href="<?= url('/dashboard') ?>">← Voltar para o Painel</a>
+    <!-- BOTÃO VOLTAR PARA O PAINEL (Estilizado direto no código) -->
+<a href="<?= url('/dashboard') ?>" 
+   style="color: #495057; text-definition: none; text-decoration: none; font-weight: bold; font-size: 13px; background: #e9ecef; padding: 8px 16px; border: 1px solid #ced4da; border-radius: 4px; display: inline-block; line-height: 1; margin-bottom: 20px; transition: background 0.2s;">
+   ← Voltar para o Painel
+</a>
+
 
     <div class="page-header">
         <h2 style="margin:0;">Movimentações de <?= isset($nomeMes) ? $nomeMes : 'Mês'; ?></h2>
@@ -253,9 +258,14 @@
                         <td style="vertical-align: middle; white-space: nowrap; text-align: center;"> 
                             <!-- BOTÃO DE DAR BAIXA (Apenas se o status for diferente de 'pago') -->
                             <?php if (strtolower($item['status']) !== 'pago'): ?>
-                                <a href="<?= url('/transacao/pagar?id=' . $item['id'] . '&mes_id=' . (isset($_GET['id']) ? $_GET['id'] : date('m'))); ?>" style="...">
-    Pagar
-</a>
+                                <!-- BOTÃO DE DAR BAIXA (Estilizado direto no código) -->
+                            <?php if (strtolower($item['status']) !== 'pago'): ?>
+                                <a href="<?= url('/transacao/pagar?id=' . $item['id'] . '&mes_id=' . (isset($_GET['id']) ? $_GET['id'] : date('m'))); ?>" 
+                                style="color: #28a745; text-decoration: none; font-weight: bold; font-size: 13px; background: #f1f9f3; padding: 6px 14px; border: 1px solid #c3e6cb; border-radius: 4px; display: inline-block; line-height: 1; margin-right: 5px;"> 
+                                    Pagar 
+                                </a> 
+                            <?php endif; ?>
+
  
                             <?php endif; ?>
 
