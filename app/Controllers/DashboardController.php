@@ -141,7 +141,8 @@ class DashboardController {
             ]);
 
             // Redireciona com sucesso total para o painel de controle principal
-            header('Location: /financas-app/dashboard');
+            header('Location: ' . url('/dashboard'));
+
             exit;
         } catch (\Exception $e) {
             echo "Erro definitivo ao salvar no banco: " . $e->getMessage();
@@ -158,7 +159,8 @@ class DashboardController {
         $mesRetorno = filter_input(INPUT_GET, 'mes', FILTER_SANITIZE_SPECIAL_CHARS) ?? '08';
 
         if (!$transacaoId) {
-            header('Location: /financas-app/dashboard');
+            header('Location: ' . url('/dashboard'));
+
             exit;
         }
 
@@ -173,7 +175,8 @@ class DashboardController {
             ]);
 
             // Força o retorno do navegador para a página do mês onde o usuário já estava
-            header("Location: /financas-app/dashboard/mes?id=" . $mesRetorno);
+            header("Location: " . url('/dashboard/mes?id=' . $mesId)); // Mantendo a sua variável do final idêntica
+
             exit;
         } catch (\Exception $e) {
             echo "Erro ao excluir o lançamento: " . $e->getMessage();
