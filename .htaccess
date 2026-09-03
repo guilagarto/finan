@@ -7,4 +7,6 @@
 
     # Redireciona tudo para a pasta public/ mantendo a URL limpa de forma relativa
     RewriteRule ^(.*)$ public/$1 [L]
+    php_flag display_errors On
+
 </IfModule>
