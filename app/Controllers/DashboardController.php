@@ -178,7 +178,32 @@ class DashboardController {
         } catch (\Exception $e) {
             echo "Erro ao excluir o lançamento: " . $e->getMessage();
         }
+
+        
+
     }
+    public function marcarComoPaga(): void {
+    // Pega o ID da transação vindo do link
+    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    // Guarda o ID do mês atual para onde o usuário deve voltar após atualizar
+    $mesId = filter_input(INPUT_GET, 'mes_id', FILTER_VALIDATE_INT) ?? date('m');
+
+    if ($id) {
+        try {
+            $db = \App\Core\Database::getConnection();
+            // Atualiza o status para 'Pago' no banco de dados
+            $stmt = $db->prepare("UPDATE transacoes SET status = 'Pago' WHERE id = :id");
+            $stmt->execute(['id' => $id]);
+        } catch (\Exception $e) {
+            // Tratamento de erro se necessário
+        }
+    }
+
+    // Redireciona de volta para a mesma página do mês de onde o usuário clicou
+    header("Location: " . url('/dashboard/mes?id=' . $mesId));
+    exit;
+}
+
 
 
 

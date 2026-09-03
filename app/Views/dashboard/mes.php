@@ -135,25 +135,45 @@
 <div class="container">
     <a href="<?= url('/dashboard') ?>">← Voltar para o Painel</a>
 
-
     <div class="page-header">
         <h2 style="margin:0;">Movimentações de <?= isset($nomeMes) ? $nomeMes : 'Mês'; ?></h2>
         <p style="color: #6c757d; margin: 5px 0 0 0;">Controle de lançamentos à vista e parcelados vigentes.</p>
     </div>
 
     <?php
-        // Lógica em PHP para somar os totais do mês atual da tabela
+        // Lógica em PHP para somar os totais do mês atual da tabela e verificar pendências
         $totalEntradas = 0;
         $totalSaidas = 0;
+        $temPendente = false;
+
         foreach ($transacoes as $t) {
             if ($t['tipo'] === 'receita') {
                 $totalEntradas += $t['valor_exibicao'];
             } else {
                 $totalSaidas += $t['valor_exibicao'];
             }
+
+            // Verifica se existe alguma despesa ou receita com status 'pendente'
+            if (strtolower($t['status']) === 'pendente') {
+                $temPendente = true;
+            }
         }
         $saldoLiquido = $totalEntradas - $totalSaidas;
     ?>
+
+    <!-- ========================================== -->
+    <!-- CARD DE ALERTA DINÂMICO E INTELIGENTE      -->
+    <!-- ========================================== -->
+    <?php if ($temPendente): ?>
+        <div style="background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 15px; border-radius: 6px; margin: 20px 0; font-weight: bold; font-size: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            ⚠️ Atenção: Você ainda possui ativos e movimentações em aberto para este mês!
+        </div>
+    <?php else: ?>
+        <div style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 15px; border-radius: 6px; margin: 20px 0; font-weight: bold; font-size: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            🎉 Parabéns! Tudo foi quitado e você está rigorosamente em dia neste mês!
+        </div>
+    <?php endif; ?>
+    <!-- ========================================== -->
 
     <!-- Cards Superiores com o Resumo Real -->
     <div class="cards-resumo">
@@ -197,13 +217,12 @@
         <tbody id="lista-transacoes"> 
             <?php if (empty($transacoes)): ?> 
                 <tr> 
-                    <td colspan="7" style="text-align: center; color: #6c757d; padding: 30px;">Nenhuma transação cadastrada ou ativa neste mês.</td> 
+                    <td colspan="7" style="text-align: center; color: #6c757d; padding: 30px;">Nenhuma transação cadastrada ou activa neste mês.</td> 
                 </tr> 
             <?php else: ?> 
                 <?php foreach ($transacoes as $item): ?> 
                     <tr class="transacao-item" data-tipo="<?= htmlspecialchars($item['tipo']); ?>"> 
                         
-                        <!-- O segredo está no 'data-label', que repete o nome da coluna no mobile -->
                         <td data-label="Data" style="vertical-align: middle;"><?= date('d/m/Y', strtotime($item['data_transacao'])); ?></td> 
                         
                         <td data-label="Descrição" style="vertical-align: middle; word-wrap: break-word; max-width: 250px;"><?= htmlspecialchars($item['descricao']); ?></td> 
@@ -219,8 +238,8 @@
                         <td data-label="Status" style="vertical-align: middle;"> 
                             <?php 
                             $statusClass = 'status-pendente'; 
-                            if ($item['status'] === 'pago') $statusClass = 'status-pago'; 
-                            if ($item['status'] === 'atrasado') $statusClass = 'status-atrasado'; 
+                            if (strtolower($item['status']) === 'pago') $statusClass = 'status-pago'; 
+                            if (strtolower($item['status']) === 'atrasado') $statusClass = 'status-atrasado'; 
                             ?> 
                             <span class="status-dot <?= $statusClass; ?>"> 
                                 <?= htmlspecialchars($item['status']); ?> 
@@ -231,17 +250,27 @@
                             <?= $item['tipo'] === 'receita' ? '+' : '-'; ?> R$ <?= number_format($item['valor_exibicao'], 2, ',', '.'); ?> 
                         </td> 
                         
-                        <td style="vertical-align: middle; white-space: nowrap;"> 
-                            <a href="/financas-app/dashboard/transacao/excluir?id=<?= $item['id']; ?>&mes=<?= isset($_GET['id']) ? $_GET['id'] : date('m'); ?>" onclick="return confirm('Atenção: Isso excluirá o lançamento em definitivo. Deseja continuar?')" style="color: #dc3545; text-decoration: none; font-weight: bold; font-size: 13px; background: #fdf2f2; padding: 6px 14px; border: 1px solid #fbc4c4; border-radius: 4px; display: inline-block; line-height: 1;"> 
+                        <td style="vertical-align: middle; white-space: nowrap; text-align: center;"> 
+                            <!-- BOTÃO DE DAR BAIXA (Apenas se o status for diferente de 'pago') -->
+                            <?php if (strtolower($item['status']) !== 'pago'): ?>
+                                <a href="<?= url('/transacao/pagar?id=' . $item['id'] . '&mes_id=' . (isset($_GET['id']) ? $_GET['id'] : date('m'))); ?>" style="color: #ffffff; text-decoration: none; font-weight: bold; font-size: 13px; background: #007bff; padding: 6px 14px; border: 1px solid #0062cc; border-radius: 4px; display: inline-block; line-height: 1; margin-right: 5px;"> 
+                                    Pagar 
+                                </a> 
+                            <?php endif; ?>
+
+                            <!-- BOTÃO EXCLUIR DINÂMICO (Previnido contra Erro 404) -->
+                            <a href="<?= url('/dashboard/transacao/excluir?id=' . $item['id'] . '&mes=' . (isset($_GET['id']) ? $_GET['id'] : date('m'))); ?>" onclick="return confirm('Atenção: Isso excluirá o lançamento em definitivo. Deseja continuar?')" style="color: #dc3545; text-decoration: none; font-weight: bold; font-size: 13px; background: #fdf2f2; padding: 6px 14px; border: 1px solid #fbc4c4; border-radius: 4px; display: inline-block; line-height: 1;"> 
                                 Excluir 
                             </a> 
                         </td> 
+                        
                     </tr> 
                 <?php endforeach; ?> 
             <?php endif; ?> 
         </tbody> 
     </table> 
 </div>
+
 </div>
 
 <script>

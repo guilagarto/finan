@@ -22,6 +22,8 @@ $router->post('/dashboard/transacao/salvar', 'DashboardController@salvarTransaca
 
 // Certifique-se de que esta linha está presente no seu routes.php:
 $router->get('/dashboard/transacao/excluir', 'DashboardController@excluirTransacao');
+$router->get('/transacao/pagar', 'DashboardController@marcarComoPaga');
+
 
 
 return $router;
