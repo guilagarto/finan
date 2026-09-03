@@ -133,7 +133,8 @@
 </header>
 
 <div class="container">
-    <a href="/financas-app/dashboard" class="back-link">← Voltar para o Painel</a>
+    <a href="<?= url('/dashboard') ?>">← Voltar para o Painel</a>
+
 
     <div class="page-header">
         <h2 style="margin:0;">Movimentações de <?= isset($nomeMes) ? $nomeMes : 'Mês'; ?></h2>
