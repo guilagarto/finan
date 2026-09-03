@@ -10,10 +10,11 @@ class Database {
 
     public static function getConnection(): PDO {
         if (self::$instance === null) {
-            $host = '127.0.0.1';
-            $dbname = 'finan'; 
-            $user = 'root';    
-            $password = '';    
+            // Tenta ler do arquivo .env. Se não existirem, usa os padrões do XAMPP local
+            $host     = $_ENV['DB_HOST']     ?? '127.0.0.1';
+            $dbname   = $_ENV['DB_NAME']     ?? 'finan'; 
+            $user     = $_ENV['DB_USER']     ?? 'root';    
+            $password = $_ENV['DB_PASS'] ?? '';    
 
             try {
                 self::$instance = new PDO(
@@ -23,7 +24,6 @@ class Database {
                     [
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                        // Configuração crucial para o XAMPP ler os tipos corretamente
                         PDO::ATTR_EMULATE_PREPARES => true, 
                         PDO::ATTR_TIMEOUT => 5, 
                     ]
