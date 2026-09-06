@@ -21,7 +21,29 @@
 <div class="login-container">
     <h2>Acessar o Sistema</h2>
 
+    
     <!-- Exibe mensagens de erro se houver algo gravado na sessão -->
+    
+        <!-- Exibe mensagens de erro se houver algo gravado na sessão -->
+    <?php if (isset($_SESSION['erro_login'])): ?>
+        <div class="alert-error">
+            <?= $_SESSION['erro_login']; ?>
+            <?php unset($_SESSION['erro_login']); // Limpa o erro para não repetir no próximo F5 ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- ========================================== -->
+    <!-- NOVO: EXIBE MENSAGEM DE SUCESSO DE CADASTRO -->
+    <!-- ========================================== -->
+    <?php if (isset($_SESSION['sucesso_cadastro'])): ?>
+        <div style="background-color: #d4edda; color: #155724; padding: 12px; border-radius: 4px; margin-bottom: 15px; border: 1px solid #c3e6cb; font-size: 14px; font-weight: bold; text-align: center;">
+            <?= $_SESSION['sucesso_cadastro']; ?>
+            <?php unset($_SESSION['sucesso_cadastro']); // Limpa o alerta para sumir no próximo F5 ?>
+        </div>
+    <?php endif; ?>
+    <!-- ========================================== -->
+
+
     <?php if (isset($_SESSION['erro_login'])): ?>
         <div class="alert-error">
             <?= $_SESSION['erro_login']; ?>

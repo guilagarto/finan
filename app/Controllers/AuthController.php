@@ -95,7 +95,7 @@ class AuthController {
         // Transforma a senha comum em um Hash Criptográfico seguro
         $senhaHash = password_hash($senhaRaw, PASSWORD_DEFAULT);
 
-        try {
+                try {
             $db = \App\Core\Database::getConnection();
             $stmt = $db->prepare("INSERT INTO usuarios (nome, email, senha, criado_em) VALUES (:nome, :email, :senha, NOW())");
             
@@ -105,12 +105,19 @@ class AuthController {
                 'senha' => $senhaHash
             ]);
             
+            // ==========================================
+            // GRAVA O ALERTA DE SUCESSO NA SESSÃO
+            // ==========================================
+            $_SESSION['sucesso_cadastro'] = "🎉 Conta criada com sucesso! Por favor, faça o login com os seus dados novos.";
+            // ==========================================
+
             // Cadastro realizado com sucesso! Redireciona para o login
             header('Location: ' . url('/login'));
             exit;
         } catch (\Exception $e) {
             echo "Erro ao cadastrar usuário no banco: " . $e->getMessage();
         }
+
     }
 
         /**
