@@ -128,7 +128,9 @@
     <h2>Finanças Pessoais v1.0</h2>
     <div>
         <span>Olá, <strong><?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário'); ?></strong></span> | 
-        <a href="/financas-app/logout">Sair</a>
+        <a href="<?= url('/logout') ?>" style="color: #dc3545; text-decoration: none; font-weight: bold; font-size: 13px; background: #fdf2f2; padding: 6px 14px; border: 1px solid #fbc4c4; border-radius: 4px; display: inline-block; line-height: 1;">
+            Sair
+        </a>
     </div>
 </header>
 
