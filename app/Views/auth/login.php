@@ -45,6 +45,15 @@
 
         <button type="submit" class="btn-login">Entrar</button>
     </form>
+
+        <div style="margin-top: 20px; text-align: center; font-size: 14px;">
+    <a href="<?= url('/recuperar-senha') ?>" style="color: #007bff; text-decoration: none; display: block; margin-bottom: 10px;">Esqueci minha senha</a>
+    <p style="color: #666; margin: 0;">Não tem uma conta? 
+        <a href="<?= url('/cadastro') ?>" style="color: #28a745; text-decoration: none; font-weight: bold;">Criar Conta</a>
+    </p>
+</div>
+
+
 </div>
 
 </body>

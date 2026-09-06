@@ -113,4 +113,31 @@ class AuthController {
         }
     }
 
+        /**
+     * Exibe a tela de esqueci a senha
+     */
+    public function showRecuperarSenha(): void {
+        require_once __DIR__ . '/../Views/auth/recuperar-senha.php';
+    }
+
+    /**
+     * Processa a simulação de recuperação de senha (POST)
+     */
+    public function processarRecuperarSenha(): void {
+        $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+
+        if (!$email) {
+            echo "E-mail inválido.";
+            return;
+        }
+
+        // Simulação de recuperação para ambiente de testes (já que servidores compartilhados exigem disparo via PHPMailer)
+        echo "<div style='font-family: Arial; text-align: center; margin-top: 50px;'>";
+        echo "<h2>📧 Simulação de Envio realizada!</h2>";
+        echo "<p>Um link de redefinição de segurança foi gerado para o e-mail: <strong>" . htmlspecialchars($email) . "</strong></p>";
+        echo "<br><a href='" . url('/login') . "' style='color: #007bff; text-decoration: none; font-weight: bold;'>Voltar para a tela de Login</a>";
+        echo "</div>";
+    }
+
+
 }

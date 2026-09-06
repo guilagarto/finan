@@ -24,6 +24,14 @@ $router->post('/dashboard/transacao/salvar', 'DashboardController@salvarTransaca
 $router->get('/dashboard/transacao/excluir', 'DashboardController@excluirTransacao');
 $router->get('/transacao/pagar', 'DashboardController@marcarComoPaga');
 
+// Rotas de Cadastro de Novos Usuários
+$router->get('/cadastro', 'AuthController@showCadastro');
+$router->post('/cadastro/salvar', 'AuthController@register');
+
+// Rotas de Recuperação de Senha (Esqueci a Senha)
+$router->get('/recuperar-senha', 'AuthController@showRecuperarSenha');
+$router->post('/recuperar-senha/enviar', 'AuthController@processarRecuperarSenha');
+
 
 
 return $router;
