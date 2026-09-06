@@ -29,7 +29,7 @@
 </header>
 
 <div class="container">
-    <a href="/financas-app/dashboard" class="back-link">← Cancelar e Voltar</a>
+    <a href="<?= url('/dashboard/') ?>" style="color: #007bff; border: 2px solid #007bff; text-decoration: none; font-size: 14px;">← Cancelar</a>
     
     <div class="form-card">
         <h3 style="margin-top:0; margin-bottom: 20px; color: #333;">Cadastrar Lançamento</h3>
