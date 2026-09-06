@@ -85,6 +85,43 @@
             </div>
         </div>
     </div>
+    <!-- BLOCO DE METAS FINANCEIRAS COM PROGRESSO REAL -->
+<div class="card" style="background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-top: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 style="margin: 0; color: #333;">🎯 Minhas Metas Financeiras</h3>
+        <a href="<?= url('/dashboard/metas') ?>" style="color: #007bff; text-decoration: none; font-weight: bold; font-size: 14px;">Gerenciar Metas →</a>
+    </div>
+
+    <?php if (empty($metasHome)): ?>
+        <p style="color: #6c757d; margin: 10px 0;">Você ainda não cadastrou nenhuma meta para acompanhar. Comece agora!</p>
+        <a href="<?= url('/dashboard/metas/nova') ?>" style="color: #28a745; text-decoration: none; font-weight: bold; font-size: 14px;">+ Criar Primeira Meta</a>
+    <?php else: ?>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            <?php foreach ($metasHome as $meta): 
+                // Calcula a porcentagem concluída de forma segura contra divisão por zero
+                $porcentagem = $meta['valor_objetivo'] > 0 ? ($meta['valor_poupado'] / $meta['valor_objetivo']) * 100 : 0;
+                $porcentagem = min($porcentagem, 100); // Garante que a barra não passe de 100%
+            ?>
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #495057;">
+                        <span><?= htmlspecialchars($meta['titulo']) ?> <span style="font-weight: normal; color: #6c757d;">(<?= ucfirst($meta['categoria']) ?>)</span></span>
+                        <span>R$ <?= number_format($meta['valor_poupado'], 2, ',', '.') ?> / R$ <?= number_format($meta['valor_objetivo'], 2, ',', '.') ?></span>
+                    </div>
+                    
+                    <!-- Barra de progresso gráfica nativa -->
+                    <div style="background: #e9ecef; width: 100%; height: 12px; border-radius: 6px; overflow: hidden; position: relative;">
+                        <div style="background: <?= $porcentagem >= 100 ? '#28a745' : '#007bff'; ?>; width: <?= $porcentagem ?>%; height: 100%; border-radius: 6px; transition: width 0.4s ease-in-out;"></div>
+                    </div>
+                    
+                    <div style="text-align: right; font-size: 12px; color: #6c757d; margin-top: 2px;">
+                        <?= number_format($porcentagem, 1, ',', '.') ?>% Concluído
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</div>
+
 
 </div>
 

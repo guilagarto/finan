@@ -23,9 +23,15 @@ class DashboardController {
     /**
      * Carrega a página principal leve
      */
-    public function index(): void {
+       public function index(): void {
+        $usuarioId = (int)$_SESSION['usuario_id']; 
+
+        // CHAMADA PADRONIZADA: Busca apenas as 3 primeiras metas para a Home
+        $metasHome = \App\Models\Meta::getPorUsuario($usuarioId, 3);
+
         require_once __DIR__ . '/../Views/dashboard/index.php';
     }
+
 
     /**
      * Carrega a listagem do mês específico vinda do banco

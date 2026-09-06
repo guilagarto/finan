@@ -32,6 +32,10 @@ $router->post('/cadastro/salvar', 'AuthController@register');
 $router->get('/recuperar-senha', 'AuthController@showRecuperarSenha');
 $router->post('/recuperar-senha/enviar', 'AuthController@processarRecuperarSenha');
 
-
+// Rotas de Metas Financeiras
+$router->get('/dashboard/metas', 'MetaController@index');
+$router->get('/dashboard/metas/nova', 'MetaController@nova');
+$router->post('/dashboard/metas/salvar', 'MetaController@salvar');
+$router->post('/dashboard/metas/atualizar-poupanca', 'MetaController@atualizarPoupanca');
 
 return $router;
