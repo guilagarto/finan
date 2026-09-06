@@ -87,12 +87,16 @@
     
     /* Transforma cada linha em um "card" individual */
     .responsive-table tr.transacao-item {
-        margin-bottom: 15px;
-        border: 1px solid #e0e0e0;
-        border-radius: 6px;
-        padding: 10px;
-        background: #fff;
-    }
+    display: block; /* OBRIGATÓRIO: Faz a linha se comportar como um card */
+    box-sizing: border-box; /* OBRIGATÓRIO: Garante que o padding de 10px fique dentro do limite da tela */
+    width: 100%; /* Força o card a ocupar o espaço disponível corretamente */
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 10px;
+    background: #fff;
+}
+
     
     /* Transforma cada célula em uma linha de dados com rótulo */
     .responsive-table td {
@@ -109,6 +113,8 @@
         border-bottom: none;
         justify-content: center; /* Centraliza o botão de excluir no mobile */
         padding-top: 12px;
+        
+
     }
     
     /* Injeta o nome da coluna antes do valor usando o atributo data-label */
@@ -118,7 +124,9 @@
         text-align: left;
         color: #495057;
         padding-right: 10px;
+        
     }
+    
 }
     </style>
 </head>
