@@ -11,8 +11,8 @@
         .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
         .welcome-box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 25px; }
         .welcome-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        .actions-layout { display: flex; flex-wrap: wrap; gap: 20px; }
-        .card-menu { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #e3e6f0; flex: 1; min-width: 280px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .actions-layout { display: block; flex-wrap: wrap; gap: 20px; width: 100%;  max-width: 100% ; box-sizing: border-box;}
+        .card-menu {display: block; background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #e3e6f0; flex: 1; max-width: 100%px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); width: 100% ;box-sizing: border-box;}
         .filter-section { display: flex; flex-direction: column; gap: 10px; }
         select { padding: 10px; border-radius: 4px; border: 1px solid #ced4da; font-size: 14px; width: 100%; }
         .btn-blue { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; text-align: center; text-decoration: none; }
@@ -73,14 +73,12 @@
                 <div>
                     <h4 style="margin-bottom: 15px;">Ações Rápidas</h4>
                     <p style="color: #6c757d; font-size: 14px; margin-top: 0;">Adicione novas receitas ou despesas diretamente no seu saldo geral.</p>
+                    <!-- BOTÃO NOVO LANÇAMENTO (Estilizado direto no código) -->
+                    <a href="<?= url('/dashboard/transacao/nova') ?>" 
+                        style="color: #ffffff; text-decoration: none; font-weight: bold; font-size: 13px; background: #007bff; padding: 8px 16px; border: 1px solid #0062cc; border-radius: 4px; display: inline-block; line-height: 1; margin-top: 10px; transition: background 0.2s;">
+                        + Novo Lançamento
+                    </a>
                 </div>
-                <!-- BOTÃO NOVO LANÇAMENTO (Estilizado direto no código) -->
-<a href="<?= url('/dashboard/transacao/nova') ?>" 
-   style="color: #ffffff; text-decoration: none; font-weight: bold; font-size: 13px; background: #007bff; padding: 8px 16px; border: 1px solid #0062cc; border-radius: 4px; display: inline-block; line-height: 1; margin-top: 10px; transition: background 0.2s;">
-   + Novo Lançamento
-</a>
-
-
 
             </div>
         </div>
